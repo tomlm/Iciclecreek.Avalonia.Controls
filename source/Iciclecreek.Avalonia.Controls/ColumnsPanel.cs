@@ -11,6 +11,12 @@ namespace Iciclecreek.Avalonia.Controls
     /// <summary>
     /// A panel which lays out its children into fixed width columns with variable height items.
     /// </summary>
+    /// <remarks>
+    /// * ColumnWidth defines the fixed width of each column.
+    /// * MaxColumns and MinColumns are used to determine the number of columns to layout.
+    /// * Gap defines the space between items in the columns
+    /// * ColumnGap defines the space between columns
+    /// </remarks>
     public class ColumnsPanel : Panel, INavigableContainer
     {
         /// <summary>
@@ -223,7 +229,7 @@ namespace Iciclecreek.Avalonia.Controls
             double scale = 1.0;
             if (nColumns == MinColumns && arrangedWidth / MinColumns < ColumnWidth)
             {
-                scale = arrangedWidth / (MinColumns * (ColumnWidth + Gap));
+                scale = arrangedWidth / (MinColumns * (ColumnWidth + ColumnGap));
             }
 
             for (int iCol = 0; iCol < nColumns; iCol++)
@@ -233,7 +239,7 @@ namespace Iciclecreek.Avalonia.Controls
                     columnLefts[iCol] = left;
                 }
 
-                left += (ColumnWidth * scale) + Gap;
+                left += (ColumnWidth * scale) + ColumnGap;
             }
 
             foreach (Control child in Children)

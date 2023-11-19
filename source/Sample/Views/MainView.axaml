@@ -14,22 +14,49 @@
          to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
     <vm:MainViewModel />
   </Design.DataContext>
-
-  <ScrollViewer  VerticalScrollBarVisibility="Auto"
-                 Width="{Binding Path=Width, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}">
-    <ItemsControl ItemsSource="{Binding Images}">
-      <ItemsControl.ItemsPanel>
-        <ItemsPanelTemplate>
-          <ice:ColumnsPanel Margin="4" ColumnGap="4" Gap="4" ColumnWidth="400" 
-                            MinColumns="2" MaxColumns="4"
-                            HorizontalAlignment="Center"/>
-        </ItemsPanelTemplate>
-      </ItemsControl.ItemsPanel>
-      <ItemsControl.ItemTemplate>
-        <DataTemplate>
-          <Image asyncImageLoader:ImageLoader.Source="{Binding}"/>
-        </DataTemplate>
-      </ItemsControl.ItemTemplate>
-    </ItemsControl>
-  </ScrollViewer>
+  <Grid RowDefinitions="Auto,*">
+    <WrapPanel Orientation="Horizontal">
+      <Grid ColumnDefinitions="Auto, *" Width="300">
+        <TextBlock Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center">ColumnWidth:</TextBlock>
+        <Slider Grid.Column="1" Minimum="10" Maximum="600" Value="{Binding ColumnWidth}"  />
+      </Grid>
+      <Grid ColumnDefinitions="Auto, *" Width="300">
+        <TextBlock Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center">MinColumns:</TextBlock>
+        <Slider Grid.Column="1" Minimum="1" Maximum="10" Value="{Binding MinColumns}" />
+      </Grid>
+      <Grid ColumnDefinitions="Auto, *" Width="300">
+        <TextBlock Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center">MaxColumns:</TextBlock>
+        <Slider Grid.Column="1" Minimum="1" Maximum="10" Value="{Binding MaxColumns}" />
+      </Grid>
+      <Grid ColumnDefinitions="Auto, *" Width="300">
+        <TextBlock Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center">Gap:</TextBlock>
+        <Slider Grid.Column="1" Minimum="0" Maximum="100" Value="{Binding Gap}" />
+      </Grid>
+      <Grid ColumnDefinitions="Auto, *" Width="300">
+        <TextBlock Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center">ColumnGap:</TextBlock>
+        <Slider Grid.Column="1" Minimum="0" Maximum="100" Value="{Binding ColumnGap}" />
+      </Grid>
+    </WrapPanel>
+    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"
+                   Width="{Binding Path=Width, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}">
+      <ItemsControl ItemsSource="{Binding Images}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <ice:ColumnsPanel Margin="4"
+                              ColumnGap="{Binding ColumnGap}"
+                              Gap="{Binding Gap}"
+                              ColumnWidth="{Binding ColumnWidth}"
+                              MinColumns="{Binding MinColumns}"
+                              MaxColumns="{Binding MaxColumns}"
+                              HorizontalAlignment="Center"/>
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <Image asyncImageLoader:ImageLoader.Source="{Binding}"/>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </ScrollViewer>
+  </Grid>
 </UserControl>
