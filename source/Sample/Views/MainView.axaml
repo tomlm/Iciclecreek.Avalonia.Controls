@@ -39,7 +39,7 @@
     </WrapPanel>
     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"
                    Width="{Binding Path=Width, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}">
-      <ItemsControl ItemsSource="{Binding Images}">
+      <ItemsControl ItemsSource="{Binding Items}">
         <ItemsControl.ItemsPanel>
           <ItemsPanelTemplate>
             <ice:ColumnsPanel Margin="4"
@@ -53,7 +53,9 @@
         </ItemsControl.ItemsPanel>
         <ItemsControl.ItemTemplate>
           <DataTemplate>
-            <Image asyncImageLoader:ImageLoader.Source="{Binding}"/>
+            <Grid Background="AliceBlue" Width="{Binding Width}" Height="{Binding Height}">
+                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Text}"  />
+            </Grid>
           </DataTemplate>
         </ItemsControl.ItemTemplate>
       </ItemsControl>

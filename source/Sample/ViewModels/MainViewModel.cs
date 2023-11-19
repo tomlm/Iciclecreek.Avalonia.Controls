@@ -1,64 +1,60 @@
-﻿using Avalonia.Rendering.Composition;
-using Avalonia.Threading;
+﻿using Avalonia.Media;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Json;
 
 namespace Sample.ViewModels;
 
+public class SampleItem : ViewModelBase
+{
+    public SampleItem(string text)
+    {
+        Text = text;
+        Height = 50 + new Random().Next(300);
+        Color = Color.FromArgb(255, (byte)new Random().Next(255), (byte)new Random().Next(255), (byte)new Random().Next(255));
+    }
+
+    public string Text { get; set; }
+
+    private int _width;
+    public int Width { get=> _width; set => this.RaiseAndSetIfChanged(ref _width, value); }
+
+    public int Height { get; set; }
+
+    public Color Color { get; set; }
+}
+
+
 public class MainViewModel : ViewModelBase
 {
-    public class PicsumImage
-    {
-        public string? id { get; set; }
-        public string? author { get; set; }
-        public int? width { get; set; }
-        public int? height { get; set; }
-        public string? url { get; set; }
-        public string? download_url { get; set; }
-    }
-
     public MainViewModel()
     {
-        Dispatcher.UIThread.Post(async () =>
-        {
-            HttpClient client = new HttpClient();
-            var images = await client.GetFromJsonAsync<List<PicsumImage>>("https://picsum.photos/v2/list?limit=100");
-            Random rnd = new Random();
-            this.Images = images!.Select(pic =>
-            {
-                var width = pic.width / 10;
-                var height = pic.height / 10;
-                var url = pic.download_url!.Replace($"{pic.width}/{pic.height}", $"{width}/{height}");
-                return url;
-            }).OrderBy(x => rnd.Next())
-            .ToList();
-        });
+        Items = Enumerable.Range(1, 100).Select(i => new SampleItem($"Item {i}") { Width = ColumnWidth }).ToList();
     }
 
-    public string Greeting => "Welcome to Avalonia!";
 
-    private List<string> _images = new List<string>();
-    public List<string> Images
-    {
-        get => _images; set
-        {
-            _images = value; 
-            this.RaisePropertyChanged();
-        }
-    }
+    public List<SampleItem> Items { get; set; }
 
     private int _columnWidth = 200;
-    public int ColumnWidth { get => _columnWidth; set => this.RaiseAndSetIfChanged(ref _columnWidth, value); }
+    public int ColumnWidth
+    {
+        get => _columnWidth;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _columnWidth, value);
+            foreach (var item in Items)
+            {
+                item.Width = value;
+            }
+        }
+    }
 
     private int _gap = 10;
     public int Gap { get => _gap; set => this.RaiseAndSetIfChanged(ref _gap, value); }
 
     private int _columnGap = 10;
-    public int ColumnGap { get => _columnGap ; set => this.RaiseAndSetIfChanged(ref _columnGap, value); }
+    public int ColumnGap { get => _columnGap; set => this.RaiseAndSetIfChanged(ref _columnGap, value); }
 
     private int _minColumns = 1;
     public int MinColumns { get => _minColumns; set => this.RaiseAndSetIfChanged(ref _minColumns, value); }
