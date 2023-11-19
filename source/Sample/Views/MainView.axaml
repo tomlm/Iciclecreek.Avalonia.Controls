@@ -14,7 +14,7 @@
          to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
     <vm:MainViewModel />
   </Design.DataContext>
-  <Grid RowDefinitions="Auto,*">
+  <Grid RowDefinitions="Auto,Auto, *">
     <WrapPanel Orientation="Horizontal">
       <Grid ColumnDefinitions="*, 2*" Width="300">
         <TextBlock Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center" >ColumnWidth:</TextBlock>

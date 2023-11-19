@@ -22,7 +22,7 @@ namespace Iciclecreek.Avalonia.Controls
         /// <summary>
         /// Defines the <see cref="Gap"/> property.
         /// </summary>
-        public static readonly StyledProperty<double> GapProperty = AvaloniaProperty.Register<ColumnsPanel, double>(nameof(Gap));
+        public static readonly StyledProperty<double> GapProperty = AvaloniaProperty.Register<ColumnsPanel, double>(nameof(Gap), 0);
 
         /// <summary>
         /// Defines the <see cref="MinColumns"/> property.
@@ -42,7 +42,7 @@ namespace Iciclecreek.Avalonia.Controls
         /// <summary>
         /// Defines the <see cref="ColumnWidthProperty"/> property.
         /// </summary>
-        public static readonly StyledProperty<double> ColumnWidthProperty = AvaloniaProperty.Register<ColumnsPanel, double>(nameof(ColumnWidth), 400);
+        public static readonly StyledProperty<double> ColumnWidthProperty = AvaloniaProperty.Register<ColumnsPanel, double>(nameof(ColumnWidth), 300);
 
         /// <summary>
         /// Initializes static members of the <see cref="ColumnsPanel"/> class.
