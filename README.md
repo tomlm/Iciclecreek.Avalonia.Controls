@@ -1,4 +1,4 @@
-![Icon](icon.png)
+![Icon](https://github.com/tomlm/Iciclecreek.Avalonia.Controls/raw/main/icon.png)
 
 # Iciclecreek.Avalonia.Controls
 This is a package of UI controls for Avalonia UI.
