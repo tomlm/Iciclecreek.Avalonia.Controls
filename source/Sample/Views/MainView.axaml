@@ -16,23 +16,23 @@
   </Design.DataContext>
   <Grid RowDefinitions="Auto,*">
     <WrapPanel Orientation="Horizontal">
-      <Grid ColumnDefinitions="Auto, *" Width="300">
-        <TextBlock Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center">ColumnWidth:</TextBlock>
+      <Grid ColumnDefinitions="*, 2*" Width="300">
+        <TextBlock Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center" >ColumnWidth:</TextBlock>
         <Slider Grid.Column="1" Minimum="10" Maximum="600" Value="{Binding ColumnWidth}"  />
       </Grid>
-      <Grid ColumnDefinitions="Auto, *" Width="300">
-        <TextBlock Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center">MinColumns:</TextBlock>
+      <Grid ColumnDefinitions="*, 2*" Width="300">
+        <TextBlock Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center" >MinColumns:</TextBlock>
         <Slider Grid.Column="1" Minimum="1" Maximum="10" Value="{Binding MinColumns}" />
       </Grid>
-      <Grid ColumnDefinitions="Auto, *" Width="300">
-        <TextBlock Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center">MaxColumns:</TextBlock>
+      <Grid ColumnDefinitions="*, 2*" Width="300">
+        <TextBlock Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center" >MaxColumns:</TextBlock>
         <Slider Grid.Column="1" Minimum="1" Maximum="10" Value="{Binding MaxColumns}" />
       </Grid>
-      <Grid ColumnDefinitions="Auto, *" Width="300">
-        <TextBlock Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center">Gap:</TextBlock>
+      <Grid ColumnDefinitions="*, 2*" Width="300" >
+        <TextBlock Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center" >Gap:</TextBlock>
         <Slider Grid.Column="1" Minimum="0" Maximum="100" Value="{Binding Gap}" />
       </Grid>
-      <Grid ColumnDefinitions="Auto, *" Width="300">
+      <Grid ColumnDefinitions="*, 2*" Width="300">
         <TextBlock Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center">ColumnGap:</TextBlock>
         <Slider Grid.Column="1" Minimum="0" Maximum="100" Value="{Binding ColumnGap}" />
       </Grid>
