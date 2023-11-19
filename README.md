@@ -11,9 +11,10 @@ Update your xmlns
 	xmlns:ice="using:Iciclecreek.Avalonia.Controls"
 ```
 
-
 ## ColumnsPanel Control
 The ColumnsPanel control is a panel which dynamically lays out its children in left-to right order into fixed width columns.  Columns will be added or removed to fill the horizontal space of the control. If there is not enough space for MinColumns then the item wills be scaled down to fit proportionally.
+![ColumnsPanel](https://github.com/tomlm/Iciclecreek.Avalonia.Controls/assets/17789481/ec829cbc-3bbb-4cdd-a4a4-e0cdb70df718)
+
 
 ### Usage
 ```xaml
