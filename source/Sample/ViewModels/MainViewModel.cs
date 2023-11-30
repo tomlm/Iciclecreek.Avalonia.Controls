@@ -59,7 +59,10 @@ public class MainViewModel : ViewModelBase
     private int _minColumns = 1;
     public int MinColumns { get => _minColumns; set => this.RaiseAndSetIfChanged(ref _minColumns, value); }
 
-    private int _maxColumns = 5;
+    private int _maxColumns = 50;
     public int MaxColumns { get => _maxColumns; set => this.RaiseAndSetIfChanged(ref _maxColumns, value); }
+
+    private string _columnDefinitions;
+    public string ColumnDefinitions {  get => _columnDefinitions; set => this.RaiseAndSetIfChanged(ref _columnDefinitions, value); }
 }
 

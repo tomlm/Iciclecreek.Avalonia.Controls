@@ -5,6 +5,8 @@ using Avalonia.Input;
 using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel.Design;
+using AV = Avalonia.Controls;
+using System.Runtime.CompilerServices;
 
 namespace Iciclecreek.Avalonia.Controls
 {
@@ -45,6 +47,11 @@ namespace Iciclecreek.Avalonia.Controls
         public static readonly StyledProperty<double> ColumnWidthProperty = AvaloniaProperty.Register<ColumnsPanel, double>(nameof(ColumnWidth), 300);
 
         /// <summary>
+        /// Defines the <see cref="ColumnWidthProperty"/> property.
+        /// </summary>
+        public static readonly StyledProperty<string> ColumnDefinitionsProperty = AvaloniaProperty.Register<ColumnsPanel, string>(nameof(ColumnDefinitions));
+
+        /// <summary>
         /// Initializes static members of the <see cref="ColumnsPanel"/> class.
         /// </summary>
         static ColumnsPanel()
@@ -54,6 +61,7 @@ namespace Iciclecreek.Avalonia.Controls
             AffectsMeasure<ColumnsPanel>(GapProperty);
             AffectsMeasure<ColumnsPanel>(MaxColumnsProperty);
             AffectsMeasure<ColumnsPanel>(MinColumnsProperty);
+            AffectsMeasure<ColumnsPanel>(ColumnDefinitionsProperty);
             // AffectsMeasure<ColumnsPanel2>(OrientationProperty);
         }
 
@@ -100,6 +108,15 @@ namespace Iciclecreek.Avalonia.Controls
         {
             get { return GetValue(MaxColumnsProperty); }
             set { SetValue(MaxColumnsProperty, value); }
+        }
+
+        /// <summary>
+        /// Gets or sets the ColumnDefinitions
+        /// </summary>
+        public string ColumnDefinitions
+        {
+            get { return GetValue(ColumnDefinitionsProperty); }
+            set { SetValue(ColumnDefinitionsProperty, value); }
         }
 
         /// <summary>
@@ -185,23 +202,25 @@ namespace Iciclecreek.Avalonia.Controls
             childAvailableWidth = Math.Min(childAvailableWidth, MaxWidth);
             childAvailableWidth = Math.Max(childAvailableWidth, MinWidth);
 
-            int nColumns = GetNumberColumns(childAvailableWidth);
+            var nColumns = GetNumberColumns(childAvailableWidth);
 
-            var columnHeights = new List<double>(nColumns);
+            var columnWidths = GetColumnWidths(childAvailableWidth, nColumns);
+
+            var columnHeights = new List<double>();
             for (int i = 0; i < nColumns; i++)
                 columnHeights.Add((double)0);
 
-            double measuredWidth = nColumns * (ColumnWidth + ColumnGap);
-
             foreach (Control child in Children)
             {
-                child.Measure(new Size(ColumnWidth, childAvailableHeight));
-                columnHeights[columnHeights.IndexOfMin()] += child.DesiredSize.Height + Gap;
+                var minCol = columnHeights.IndexOfMin();
+                child.Measure(new Size(columnWidths[minCol], childAvailableHeight));
+                columnHeights[minCol] += child.DesiredSize.Height + Gap;
             }
 
             var measuredHeight = columnHeights.Max() - Gap;
-            return new Size(measuredWidth, measuredHeight);
+            return new Size(childAvailableWidth, measuredHeight*2);
         }
+
 
         /// <summary>
         /// Arranges the control's children.
@@ -219,6 +238,7 @@ namespace Iciclecreek.Avalonia.Controls
 
             var columnHeights = new List<double>(nColumns);
             var columnLefts = new List<double>(nColumns);
+            var columnWidths = GetColumnWidths(finalSize.Width, nColumns);
             for (int i = 0; i < nColumns; i++)
             {
                 columnHeights.Add((double)0);
@@ -239,7 +259,7 @@ namespace Iciclecreek.Avalonia.Controls
                     columnLefts[iCol] = left;
                 }
 
-                left += (ColumnWidth * scale) + ColumnGap;
+                left += (columnWidths[iCol] * scale) + ColumnGap;
             }
 
             foreach (Control child in Children)
@@ -255,14 +275,75 @@ namespace Iciclecreek.Avalonia.Controls
             }
 
             arrangedHeight = Math.Max(arrangedHeight - gap, finalSize.Height);
-            return new Size(arrangedWidth, arrangedHeight);
+            return new Size(arrangedWidth, arrangedHeight*2);
         }
 
         private int GetNumberColumns(double arrangedWidth)
         {
+            if (ColumnDefinitions != null && ColumnDefinitions.Any())
+            {
+                var parts = ColumnDefinitions.Split(',').ToList();
+                return parts.Count;
+            }
+
             var nColumns = Math.Max(MinColumns, (int)Math.Floor(arrangedWidth / (ColumnWidth + ColumnGap)));
             nColumns = Math.Min(MaxColumns, nColumns);
             return nColumns;
+        }
+
+        private List<double> GetColumnWidths(double childAvailableWidth, int nColumns)
+        {
+            List<double> columnWidths = new List<double>();
+            if (ColumnDefinitions != null && ColumnDefinitions.Any())
+            {
+                var parts = ColumnDefinitions.Replace("Auto","*", StringComparison.OrdinalIgnoreCase).Split(',').ToList();
+                int starCount = 0;
+                for (int iCol = 0; iCol < nColumns; iCol++)
+                {
+                    if (float.TryParse(parts[iCol], out var width))
+                    {
+                        columnWidths.Add(width);
+                    }
+                    else
+                    {
+                        starCount++;
+                        columnWidths.Add(0);
+                    }
+                }
+                // var fixed parts
+                var fixedWidth = columnWidths.Sum();
+                float totalWeight = 0;
+                for (int iCol = 0; iCol < nColumns; iCol++)
+                {
+                    if (parts[iCol].Contains("*"))
+                    {
+                        var part = parts[iCol].Trim('*');
+                        if (String.IsNullOrEmpty(part))
+                            part = "1";
+
+                        if (float.TryParse(part, out var starWidth))
+                        {
+                            totalWeight += starWidth;
+                            columnWidths[iCol] = starWidth;
+                        }
+                    }
+                }
+                var available = childAvailableWidth - fixedWidth - (ColumnGap * nColumns - 1);
+                for (int iCol = 0; iCol < nColumns; iCol++)
+                {
+                    if (parts[iCol].Contains("*"))
+                    {
+                        columnWidths[iCol] = columnWidths[iCol]  * available / totalWeight;
+                    }
+                }
+            }
+            else
+            {
+
+                for (int iCol = 0; iCol < nColumns; iCol++)
+                    columnWidths.Add((double)ColumnWidth);
+            }
+            return columnWidths;
         }
     }
 

@@ -14,19 +14,22 @@
          to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
     <vm:MainViewModel />
   </Design.DataContext>
-  <Grid RowDefinitions="Auto,Auto, *">
+  <Grid RowDefinitions="Auto, *">
     <WrapPanel Orientation="Horizontal">
       <Grid ColumnDefinitions="*, 2*" Width="300">
         <TextBlock Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center" >ColumnWidth:</TextBlock>
-        <Slider Grid.Column="1" Minimum="10" Maximum="600" Value="{Binding ColumnWidth}"  />
+        <Slider Grid.Column="1" Minimum="10" Maximum="600" Value="{Binding ColumnWidth}" 
+                IsEnabled="{Binding ColumnDefinitions,Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
       </Grid>
       <Grid ColumnDefinitions="*, 2*" Width="300">
         <TextBlock Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center" >MinColumns:</TextBlock>
-        <Slider Grid.Column="1" Minimum="1" Maximum="10" Value="{Binding MinColumns}" />
+        <Slider Grid.Column="1" Minimum="1" Maximum="50" Value="{Binding MinColumns}" 
+                IsEnabled="{Binding ColumnDefinitions,Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
       </Grid>
       <Grid ColumnDefinitions="*, 2*" Width="300">
         <TextBlock Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center" >MaxColumns:</TextBlock>
-        <Slider Grid.Column="1" Minimum="1" Maximum="10" Value="{Binding MaxColumns}" />
+        <Slider Grid.Column="1" Minimum="1" Maximum="50" Value="{Binding MaxColumns}" 
+                IsEnabled="{Binding ColumnDefinitions,Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
       </Grid>
       <Grid ColumnDefinitions="*, 2*" Width="300" >
         <TextBlock Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center" >Gap:</TextBlock>
@@ -36,8 +39,12 @@
         <TextBlock Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center">ColumnGap:</TextBlock>
         <Slider Grid.Column="1" Minimum="0" Maximum="100" Value="{Binding ColumnGap}" />
       </Grid>
+      <Grid ColumnDefinitions="*, 2*" Width="400">
+        <TextBlock Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center">ColumnDefinitions:</TextBlock>
+        <TextBox Grid.Column="1" Text="{Binding ColumnDefinitions}" VerticalAlignment="Center" />
+      </Grid>
     </WrapPanel>
-    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"
+    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible"
                    Width="{Binding Path=Width, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}">
       <ItemsControl ItemsSource="{Binding Items}">
         <ItemsControl.ItemsPanel>
@@ -45,6 +52,7 @@
             <ice:ColumnsPanel Margin="4"
                               ColumnGap="{Binding ColumnGap}"
                               Gap="{Binding Gap}"
+                              ColumnDefinitions="{Binding ColumnDefinitions}"
                               ColumnWidth="{Binding ColumnWidth}"
                               MinColumns="{Binding MinColumns}"
                               MaxColumns="{Binding MaxColumns}"
@@ -53,8 +61,13 @@
         </ItemsControl.ItemsPanel>
         <ItemsControl.ItemTemplate>
           <DataTemplate>
-            <Grid Background="AliceBlue" Width="{Binding Width}" Height="{Binding Height}">
-                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding Text}"  />
+            <Grid>
+                <Image asyncImageLoader:ImageLoader.Source="https://www.clker.com/cliparts/T/3/v/8/2/h/blue-rectangle-hi.png" Stretch="UniformToFill" 
+                       Height="{Binding Height}" 
+                       />
+                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" 
+                           Foreground="White" 
+                           Text="{Binding Text}"  ZIndex="100"/>
             </Grid>
           </DataTemplate>
         </ItemsControl.ItemTemplate>
