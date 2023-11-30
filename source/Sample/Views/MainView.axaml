@@ -14,7 +14,7 @@
          to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
     <vm:MainViewModel />
   </Design.DataContext>
-  <Grid RowDefinitions="Auto, *">
+  <Grid RowDefinitions="Auto, Auto, *" >
     <WrapPanel Orientation="Horizontal">
       <Grid ColumnDefinitions="*, 2*" Width="300">
         <TextBlock Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center" >ColumnWidth:</TextBlock>
@@ -31,6 +31,13 @@
         <Slider Grid.Column="1" Minimum="1" Maximum="50" Value="{Binding MaxColumns}" 
                 IsEnabled="{Binding ColumnDefinitions,Converter={x:Static StringConverters.IsNullOrEmpty}}"/>
       </Grid>
+      <Grid ColumnDefinitions="*, 2*" Width="400">
+        <TextBlock Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center">ColumnDefinitions:</TextBlock>
+        <TextBox Grid.Column="1" Text="{Binding ColumnDefinitions}" VerticalAlignment="Center"
+                 Watermark="200,2*,*,300"/>
+      </Grid>
+    </WrapPanel>
+    <WrapPanel Orientation="Horizontal" Grid.Row="1">
       <Grid ColumnDefinitions="*, 2*" Width="300" >
         <TextBlock Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center" >Gap:</TextBlock>
         <Slider Grid.Column="1" Minimum="0" Maximum="100" Value="{Binding Gap}" />
@@ -39,12 +46,9 @@
         <TextBlock Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center">ColumnGap:</TextBlock>
         <Slider Grid.Column="1" Minimum="0" Maximum="100" Value="{Binding ColumnGap}" />
       </Grid>
-      <Grid ColumnDefinitions="*, 2*" Width="400">
-        <TextBlock Margin="4" HorizontalAlignment="Right" VerticalAlignment="Center">ColumnDefinitions:</TextBlock>
-        <TextBox Grid.Column="1" Text="{Binding ColumnDefinitions}" VerticalAlignment="Center" />
-      </Grid>
     </WrapPanel>
-    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Visible"
+
+    <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Visible"
                    Width="{Binding Path=Width, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}">
       <ItemsControl ItemsSource="{Binding Items}">
         <ItemsControl.ItemsPanel>
@@ -62,9 +66,8 @@
         <ItemsControl.ItemTemplate>
           <DataTemplate>
             <Grid>
-                <Image asyncImageLoader:ImageLoader.Source="https://www.clker.com/cliparts/T/3/v/8/2/h/blue-rectangle-hi.png" Stretch="UniformToFill" 
-                       Height="{Binding Height}" 
-                       />
+                <Image Source="avares://Sample/Assets/blue-rectangle.png" Stretch="UniformToFill" 
+                       Height="{Binding Height}" />
                 <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" 
                            Foreground="White" 
                            Text="{Binding Text}"  ZIndex="100"/>

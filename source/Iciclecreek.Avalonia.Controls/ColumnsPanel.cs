@@ -218,7 +218,7 @@ namespace Iciclecreek.Avalonia.Controls
             }
 
             var measuredHeight = columnHeights.Max() - Gap;
-            return new Size(childAvailableWidth, measuredHeight*2);
+            return new Size(childAvailableWidth, measuredHeight * 2);
         }
 
 
@@ -275,14 +275,17 @@ namespace Iciclecreek.Avalonia.Controls
             }
 
             arrangedHeight = Math.Max(arrangedHeight - gap, finalSize.Height);
-            return new Size(arrangedWidth, arrangedHeight*2);
+            return new Size(arrangedWidth, arrangedHeight * 2);
         }
 
         private int GetNumberColumns(double arrangedWidth)
         {
-            if (ColumnDefinitions != null && ColumnDefinitions.Any())
+            if (!String.IsNullOrEmpty(ColumnDefinitions))
             {
-                var parts = ColumnDefinitions.Split(',').ToList();
+                var parts = ColumnDefinitions
+                    .Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+                    .ToList();
+
                 return parts.Count;
             }
 
@@ -294,28 +297,42 @@ namespace Iciclecreek.Avalonia.Controls
         private List<double> GetColumnWidths(double childAvailableWidth, int nColumns)
         {
             List<double> columnWidths = new List<double>();
-            if (ColumnDefinitions != null && ColumnDefinitions.Any())
+            if (!String.IsNullOrEmpty(ColumnDefinitions))
             {
-                var parts = ColumnDefinitions.Replace("Auto","*", StringComparison.OrdinalIgnoreCase).Split(',').ToList();
+                var autoValue = (ColumnWidth > 0) ? ColumnWidth.ToString() : "*";
+                var parts = ColumnDefinitions
+                    .Replace("Auto", autoValue, StringComparison.OrdinalIgnoreCase)
+                    .Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+                    .ToList();
                 int starCount = 0;
                 for (int iCol = 0; iCol < nColumns; iCol++)
                 {
-                    if (float.TryParse(parts[iCol], out var width))
+                    if (parts[iCol].EndsWith('*'))
                     {
-                        columnWidths.Add(width);
-                    }
-                    else
-                    {
+                        // it's a ratio star value
                         starCount++;
                         columnWidths.Add(0);
                     }
+                    else
+                    {
+                        // it's a static value
+                        if (float.TryParse(parts[iCol], out float width))
+                        {
+                            columnWidths.Add(width);
+                        }
+                        else
+                        {
+                            columnWidths.Add(0);
+                        }
+                    }
                 }
+
                 // var fixed parts
                 var fixedWidth = columnWidths.Sum();
                 float totalWeight = 0;
                 for (int iCol = 0; iCol < nColumns; iCol++)
                 {
-                    if (parts[iCol].Contains("*"))
+                    if (parts[iCol].EndsWith("*"))
                     {
                         var part = parts[iCol].Trim('*');
                         if (String.IsNullOrEmpty(part))
@@ -326,6 +343,10 @@ namespace Iciclecreek.Avalonia.Controls
                             totalWeight += starWidth;
                             columnWidths[iCol] = starWidth;
                         }
+                        else
+                        {
+                            columnWidths[iCol] = 0;
+                        }
                     }
                 }
                 var available = childAvailableWidth - fixedWidth - (ColumnGap * nColumns - 1);
@@ -333,7 +354,8 @@ namespace Iciclecreek.Avalonia.Controls
                 {
                     if (parts[iCol].Contains("*"))
                     {
-                        columnWidths[iCol] = columnWidths[iCol]  * available / totalWeight;
+                        // this is the actual comupted relative width.
+                        columnWidths[iCol] = columnWidths[iCol] * available / totalWeight;
                     }
                 }
             }
