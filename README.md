@@ -17,11 +17,11 @@ Update your xmlns
 The ColumnsPanel control is a panel which dynamically lays out its children in left-to right order into columns.  
 
 There are 2 modes of usage:
-* **Dynamic Columns** - The ColumnWidth property defines the width of every column, and the number of columns is 
+* **Dynamic Columns** - The **ColumnWidth** property defines the width of every column, and the number of columns is 
   dynamically set to the number of columns which fit the width of the control. The **MinColumns** and **MaxColumns** 
-* properties can be used to control the number of columns.
-* **Static Columns** - The **ColumnDefinitions** property defines column definitions (ex: '1*,2*,500') 
-  The number of columns is determined by the number of column definitions. **MinColumn**, **MaxColumns** are ignored. 
+  properties can be used to control the number of columns.
+* **Static Columns** - The **ColumnDefinitions** property defines column definitions (ex: ```'*, 2*, 500'```) 
+  The number of columns is determined by the number of column definitions. **MinColumns**, **MaxColumns** are ignored. 
  
 
 
@@ -60,5 +60,5 @@ Example of a columns panel in a items control
 | **MaxColumns** | Int.MaxValue | The maximum number of columns. |
 | **Gap** | 0 | The vertical gap between each item in a column |
 | **ColumnGap** | 0 | The horizontal gap between each column|
-| **ColumnDefinitions** | null | A ColumnDefinitions string like '*,2*,*' which can be used to specify the width of each column. If this is set then ColumnWidth, MinColumns, MaxColumns are ignored. |
+| **ColumnDefinitions** | null | A ColumnDefinitions string like ```'300,2*,*'``` which can be used to specify the width of each column. When ColumnDefinitions is set ColumnWidth, MinColumns, MaxColumns are ignored. |
 
