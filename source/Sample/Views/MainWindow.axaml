@@ -11,6 +11,21 @@
         Title="Sample">
   <StackPanel Orientation="Vertical">
     <Button Content="Toggle Spinner" Click="OnToggleSpinner"></Button>
+    <WrapPanel >
+      <TextBlock Padding="4">BigTextBlockSpinner</TextBlock>
+      <StackPanel Orientation="Vertical" >
+        <TextBlock Padding="4">Square Lines</TextBlock>
+        <ice:BigTextBlockSpinner AnimationType="SquareLines" Columns="5" Rows="4" IsActive="{Binding SpinnerActive}" />
+      </StackPanel>
+      <StackPanel Orientation="Vertical" >
+        <TextBlock Padding="4">Round Lines</TextBlock>
+        <ice:BigTextBlockSpinner AnimationType="RoundLines" Columns="5" Rows="4" IsActive="{Binding SpinnerActive}" />
+      </StackPanel>
+      <StackPanel Orientation="Vertical" >
+        <TextBlock Padding="4">Dots</TextBlock>
+        <ice:BigTextBlockSpinner AnimationType="Dots" Columns="5" Rows="4" IsActive="{Binding SpinnerActive}" />
+      </StackPanel>
+    </WrapPanel>
     <ItemsControl x:Name="SpinnerPanel" ItemsSource="{Binding AnimationTypes}">
       <ItemsControl.ItemsPanel>
         <ItemsPanelTemplate>

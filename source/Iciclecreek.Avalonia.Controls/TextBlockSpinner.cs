@@ -32,14 +32,14 @@ namespace Iciclecreek.Avalonia.Controls
                 case nameof(IsActive):
                     if (IsActive)
                     {
-                        await StopSpinner();
+                        StopSpinner();
 
                         _spinnerTask = StartSpinner();
                         this.IsVisible = true;
                     }
                     else
                     {
-                        await StopSpinner();
+                        StopSpinner();
                         this.IsVisible = false;
                     }
                     break;
@@ -125,7 +125,7 @@ namespace Iciclecreek.Avalonia.Controls
             _frame = 0;
         }
 
-        private async Task StopSpinner()
+        private void StopSpinner()
         {
             if (_cancelationTokenSource != null)
             {
@@ -133,8 +133,6 @@ namespace Iciclecreek.Avalonia.Controls
 
                 if (_spinnerTask != null)
                 {
-                    await _spinnerTask;
-
                     _spinnerTask = null;
                 }
             }
