@@ -1,4 +1,5 @@
 ﻿using Avalonia.Media;
+using Iciclecreek.Avalonia.Controls;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -36,6 +37,8 @@ public class MainViewModel : ViewModelBase
 
     public List<SampleItem> Items { get; set; }
 
+    public List<AnimationType> AnimationTypes { get => Enum.GetValues<AnimationType>().ToList(); }
+
     private int _columnWidth = 200;
     public int ColumnWidth
     {
@@ -49,6 +52,9 @@ public class MainViewModel : ViewModelBase
             }
         }
     }
+
+    private bool _spinner;
+    public bool SpinnerActive { get => _spinner; set => this.RaiseAndSetIfChanged(ref _spinner, value); }
 
     private int _gap = 10;
     public int Gap { get => _gap; set => this.RaiseAndSetIfChanged(ref _gap, value); }

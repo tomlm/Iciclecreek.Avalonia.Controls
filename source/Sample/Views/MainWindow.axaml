@@ -4,9 +4,28 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:Sample.Views"
+        xmlns:ice="using:Iciclecreek.Avalonia.Controls"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Sample.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="Sample">
-        <views:MainView />
+  <StackPanel Orientation="Vertical">
+    <Button Content="Toggle Spinner" Click="OnToggleSpinner"></Button>
+    <ItemsControl x:Name="SpinnerPanel" ItemsSource="{Binding AnimationTypes}">
+      <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+          <ice:ColumnsPanel />
+        </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <Grid ColumnDefinitions="Auto Auto" >
+            <TextBlock Text="{Binding}" FontSize="20" FontFamily="Consolas"  />
+            <ice:TextBlockSpinner AnimationType="{Binding}" Grid.Column="1" IsActive="{Binding #SpinnerPanel.DataContext.SpinnerActive}" FontSize="20" FontFamily="Consolas"  />
+          </Grid>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+    <views:MainView />
+  </StackPanel>
 </Window>
