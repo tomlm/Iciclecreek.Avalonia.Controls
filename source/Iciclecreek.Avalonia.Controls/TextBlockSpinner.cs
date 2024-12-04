@@ -24,7 +24,7 @@ namespace Iciclecreek.Avalonia.Controls
         {
         }
 
-        protected async override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+        protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
         {
             switch (change.Property.Name)
             {

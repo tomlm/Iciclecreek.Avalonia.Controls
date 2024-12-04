@@ -14,16 +14,12 @@
     <WrapPanel >
       <TextBlock Padding="4">BigTextBlockSpinner</TextBlock>
       <StackPanel Orientation="Vertical" >
-        <TextBlock Padding="4">Square Lines</TextBlock>
-        <ice:BigTextBlockSpinner AnimationType="SquareLines" Columns="5" Rows="4" IsActive="{Binding SpinnerActive}" />
+        <TextBlock Padding="4">Dot</TextBlock>
+        <ice:BigTextBlockSpinner Columns="6" Rows="3" IsActive="{Binding SpinnerActive}" FontFamily="Cascadia Mono" />
       </StackPanel>
       <StackPanel Orientation="Vertical" >
-        <TextBlock Padding="4">Round Lines</TextBlock>
-        <ice:BigTextBlockSpinner AnimationType="RoundLines" Columns="5" Rows="4" IsActive="{Binding SpinnerActive}" />
-      </StackPanel>
-      <StackPanel Orientation="Vertical" >
-        <TextBlock Padding="4">Dots</TextBlock>
-        <ice:BigTextBlockSpinner AnimationType="Dots" Columns="5" Rows="4" IsActive="{Binding SpinnerActive}" />
+        <TextBlock Padding="4">Block</TextBlock>
+        <ice:BigTextBlockSpinner AnimationChar="█" Columns="5" Rows="3" Length="5" IsActive="{Binding SpinnerActive}" FontFamily="Cascadia Mono" />
       </StackPanel>
     </WrapPanel>
     <ItemsControl x:Name="SpinnerPanel" ItemsSource="{Binding AnimationTypes}">

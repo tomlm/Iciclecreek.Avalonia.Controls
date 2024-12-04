@@ -92,6 +92,6 @@ The BigTextBlockSpinner control is a loading/busy spinner which uses Text charac
 | **Rows** | number | defines number of characters in height |
 | **Colunms** | number | defines number of characters in width |
 | **Length** | number | defines how "long" the tail is in characters |
-| **AnimationType** | enum | Dots/SquareLines/RoundLines |
+| **AnimationChar** | char| char to use to render the animation |
 
 
