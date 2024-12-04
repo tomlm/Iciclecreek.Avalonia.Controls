@@ -16,7 +16,6 @@ namespace Iciclecreek.Avalonia.Controls
         public static readonly StyledProperty<AnimationType> AnimationTypeProperty =
             AvaloniaProperty.Register<TextBlockSpinner, AnimationType>(nameof(AnimationType), defaultValue: AnimationType.Arcs);
 
-        private CancellationTokenSource _cancelationTokenSource;
         private int _frame;
         private string[] _animation;
         private Task _spinnerTask;
@@ -32,14 +31,11 @@ namespace Iciclecreek.Avalonia.Controls
                 case nameof(IsActive):
                     if (IsActive)
                     {
-                        StopSpinner();
-
                         _spinnerTask = StartSpinner();
                         this.IsVisible = true;
                     }
                     else
                     {
-                        StopSpinner();
                         this.IsVisible = false;
                     }
                     break;
@@ -77,23 +73,12 @@ namespace Iciclecreek.Avalonia.Controls
 
         private async Task StartSpinner()
         {
-            StopSpinner();
-
             LoadAnimation();
 
-            _cancelationTokenSource = new CancellationTokenSource();
-            while (_cancelationTokenSource.IsCancellationRequested == false)
+            while (IsActive)
             {
                 await Dispatcher.UIThread.InvokeAsync(() => Text = _animation[_frame++ % _animation.Length]);
-                try
-                {
-
-                    await Task.Delay(Speed, _cancelationTokenSource.Token);
-                }
-                catch (TaskCanceledException)
-                {
-                    break;
-                }
+                await Task.Delay(Speed);
             }
         }
 
@@ -125,17 +110,5 @@ namespace Iciclecreek.Avalonia.Controls
             _frame = 0;
         }
 
-        private void StopSpinner()
-        {
-            if (_cancelationTokenSource != null)
-            {
-                _cancelationTokenSource.Cancel();
-
-                if (_spinnerTask != null)
-                {
-                    _spinnerTask = null;
-                }
-            }
-        }
     }
 }

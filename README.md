@@ -24,8 +24,6 @@ There are 2 modes of usage:
   The number of columns is determined by the number of column definitions. **MinColumns**, **MaxColumns** are ignored. 
  
 
-
-
 ### Usage
 ```xaml
 <ice:ColumnsPanel ColumnWidth="100">
@@ -61,4 +59,22 @@ Example of a columns panel in a items control
 | **Gap** | 0 | The vertical gap between each item in a column |
 | **ColumnGap** | 0 | The horizontal gap between each column|
 | **ColumnDefinitions** | null | A ColumnDefinitions string like ```'300,2*,*'``` which can be used to specify the width of each column. When ColumnDefinitions is set ColumnWidth, MinColumns, MaxColumns are ignored. |
+
+
+## TextBlockSpinner Control
+The TextBlockSpinner control is a loading/busy spinner which uses Text characters to create the spinner.
+
+
+### Usage
+```xaml
+<ice:TextBlockSpinner AnimationType="Arcs" IsActive="{Binding ...}" />
+```
+
+## BigTextBlockSpinner Control
+The BigTextBlockSpinner control is a loading/busy spinner which uses Text characters to create the spinner but it can be arbitrary large.
+
+### Usage
+```xaml
+<ice:BigTextBlockSpinner AnimationType="Dots" IsActive="{Binding ...}" />
+```
 

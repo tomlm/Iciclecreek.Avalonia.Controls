@@ -31,9 +31,7 @@ namespace Iciclecreek.Avalonia.Controls
         public static readonly StyledProperty<int> LengthProperty =
             AvaloniaProperty.Register<TextBlockSpinner, int>(nameof(Length), defaultValue: 3);
 
-        private CancellationTokenSource _cancelationTokenSource;
         private int _frame;
-        private Task _spinnerTask;
         private List<Point> _frames = new List<Point>();
 
         public BigTextBlockSpinner()
@@ -55,14 +53,11 @@ namespace Iciclecreek.Avalonia.Controls
                 case nameof(IsActive):
                     if (IsActive)
                     {
-                        StopSpinner();
-
-                        _spinnerTask = StartSpinner();
+                        _ = StartSpinner();
                         this.IsVisible = true;
                     }
                     else
                     {
-                        StopSpinner();
                         this.IsVisible = false;
                     }
                     break;
@@ -162,18 +157,15 @@ namespace Iciclecreek.Avalonia.Controls
         }
         private async Task StartSpinner()
         {
-            StopSpinner();
-
             LoadAnimation();
 
-            _cancelationTokenSource = new CancellationTokenSource();
-            while (_cancelationTokenSource.IsCancellationRequested == false)
+            while (IsActive)
             {
                 await Dispatcher.UIThread.InvokeAsync(() =>
                 {
                     Point[] points = new Point[Length];
                     var index = _frame++;
-                    for (int count = Length-1; count >= 0; count--)
+                    for (int count = Length - 1; count >= 0; count--)
                     {
                         points[count] = _frames[index++ % _frames.Count];
                     }
@@ -192,15 +184,8 @@ namespace Iciclecreek.Avalonia.Controls
                         }
                     }
                 });
-                try
-                {
 
-                    await Task.Delay(Speed, _cancelationTokenSource.Token);
-                }
-                catch (TaskCanceledException)
-                {
-                    break;
-                }
+                await Task.Delay(Speed);
             }
         }
 
@@ -313,17 +298,5 @@ namespace Iciclecreek.Avalonia.Controls
             _frame = 0;
         }
 
-        private void StopSpinner()
-        {
-            if (_cancelationTokenSource != null)
-            {
-                _cancelationTokenSource.Cancel();
-
-                if (_spinnerTask != null)
-                {
-                    _spinnerTask = null;
-                }
-            }
-        }
     }
 }
