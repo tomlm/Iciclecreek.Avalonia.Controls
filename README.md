@@ -63,6 +63,7 @@ Example of a columns panel in a items control
 
 ## TextBlockSpinner Control
 The TextBlockSpinner control is a loading/busy spinner which uses Text characters to create the spinner.
+![spinners](https://github.com/user-attachments/assets/35750276-15e2-4941-b6b6-e2ea8fb87872)
 
 
 ### Usage
@@ -70,11 +71,27 @@ The TextBlockSpinner control is a loading/busy spinner which uses Text character
 <ice:TextBlockSpinner AnimationType="Arcs" IsActive="{Binding ...}" />
 ```
 
+### Properties
+
+| Property | Default | Description |
+| --- | --- | --- |
+| **IsActive** | true/false | When it's active it's visible and animating |
+| **AnimationType** | enum | name of animationtype |
+
 ## BigTextBlockSpinner Control
 The BigTextBlockSpinner control is a loading/busy spinner which uses Text characters to create the spinner but it can be arbitrary large.
+![bigspinner](https://github.com/user-attachments/assets/e2ea1cf0-70a5-4b0a-b74d-238f0418e611)
 
 ### Usage
 ```xaml
-<ice:BigTextBlockSpinner AnimationType="Dots" IsActive="{Binding ...}" />
+<ice:BigTextBlockSpinner AnimationType="Dots" Rows="5" Columns="5" IsActive="{Binding ...}" />
 ```
+| Property | Default | Description |
+| --- | --- | --- |
+| **IsActive** | true/false | When it's active it's visible and animating |
+| **Rows** | number | defines number of characters in height |
+| **Colunms** | number | defines number of characters in width |
+| **Length** | number | defines how "long" the tail is in characters |
+| **AnimationType** | enum | Dots/SquareLines/RoundLines |
+
 
