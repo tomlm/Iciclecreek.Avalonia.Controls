@@ -7,8 +7,8 @@ namespace Iciclecreek.Avalonia.Controls
 
     public class TextBlockSpinner : TextBlock
     {
-        public static readonly StyledProperty<int> SpeedProperty =
-            AvaloniaProperty.Register<TextBlockSpinner, int>(nameof(Speed), defaultValue: 100);
+        public static readonly StyledProperty<int> DelayProperty =
+            AvaloniaProperty.Register<TextBlockSpinner, int>(nameof(Delay), defaultValue: 100);
 
         public static readonly StyledProperty<bool> IsActiveProperty =
             AvaloniaProperty.Register<TextBlockSpinner, bool>(nameof(IsActive), defaultValue: false);
@@ -50,10 +50,10 @@ namespace Iciclecreek.Avalonia.Controls
             }
         }
 
-        public int Speed
+        public int Delay
         {
-            get { return GetValue(SpeedProperty); }
-            set { SetValue(SpeedProperty, value); }
+            get { return GetValue(DelayProperty); }
+            set { SetValue(DelayProperty, value); }
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace Iciclecreek.Avalonia.Controls
             while (IsActive)
             {
                 await Dispatcher.UIThread.InvokeAsync(() => Text = _animation[_frame++ % _animation.Length]);
-                await Task.Delay(Speed);
+                await Task.Delay(Delay);
             }
         }
 

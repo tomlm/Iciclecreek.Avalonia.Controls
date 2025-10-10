@@ -15,11 +15,18 @@
       <TextBlock Padding="4">BigTextBlockSpinner</TextBlock>
       <StackPanel Orientation="Vertical" >
         <TextBlock Padding="4">Dot</TextBlock>
-        <ice:BigTextBlockSpinner Columns="6" Rows="3" IsActive="{Binding SpinnerActive}" FontFamily="Cascadia Mono" />
+        <ice:BigTextBlockSpinner Columns="6" Rows="3" 
+                                 IsActive="{Binding SpinnerActive}" 
+                                 FontFamily="Cascadia Mono" />
       </StackPanel>
       <StackPanel Orientation="Vertical" >
         <TextBlock Padding="4">Block</TextBlock>
-        <ice:BigTextBlockSpinner AnimationChar="█" Columns="5" Rows="3" Length="5" IsActive="{Binding SpinnerActive}" FontFamily="Cascadia Mono" />
+        <ice:BigTextBlockSpinner AnimationChar="█" 
+                                 Columns="5" 
+                                 Rows="3" 
+                                 Length="5" 
+                                 IsActive="{Binding SpinnerActive}" 
+                                 FontFamily="Cascadia Mono" />
       </StackPanel>
     </WrapPanel>
     <ItemsControl x:Name="SpinnerPanel" ItemsSource="{Binding AnimationTypes}">
@@ -32,11 +39,29 @@
         <DataTemplate>
           <Grid ColumnDefinitions="Auto Auto" >
             <TextBlock Text="{Binding}" FontSize="20" FontFamily="Consolas"  />
-            <ice:TextBlockSpinner AnimationType="{Binding}" Grid.Column="1" IsActive="{Binding #SpinnerPanel.DataContext.SpinnerActive}" FontSize="20" FontFamily="Consolas"  />
+            <!--<ice:TextBlockSpinner AnimationType="{Binding}" Grid.Column="1" IsActive="{Binding #SpinnerPanel.DataContext.SpinnerActive}" FontSize="20" FontFamily="Consolas"  />-->
+            <TextBlock Grid.Column="1"
+                       Margin="4 0 0 0"
+                       ice:AnimatedText.IsAnimating="{Binding #SpinnerPanel.DataContext.SpinnerActive}"
+                       ice:AnimatedText.Animation="{Binding}"
+                       FontSize="20"
+                       FontFamily="Consolas"
+                       Text="{Binding}"/>
           </Grid>
         </DataTemplate>
       </ItemsControl.ItemTemplate>
     </ItemsControl>
+    <StackPanel Orientation="Horizontal">
+      <TextBlock Text="Custom" FontSize="20" FontFamily="Consolas"  />
+      <TextBlock Grid.Column="1"
+             Margin="4 0 0 0"
+             ice:AnimatedText.IsAnimating="{Binding #SpinnerPanel.DataContext.SpinnerActive}"
+             ice:AnimatedText.Frames="1,2,3,4,5,6,7,8,9,8,7,6,6,5,4,3,2"
+             FontSize="20"
+             FontFamily="Consolas"
+             Text="Custom"/>
+    </StackPanel>
+
     <views:MainView />
   </StackPanel>
 </Window>

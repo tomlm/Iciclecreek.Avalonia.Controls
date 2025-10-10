@@ -60,9 +60,28 @@ Example of a columns panel in a items control
 | **ColumnGap** | 0 | The horizontal gap between each column|
 | **ColumnDefinitions** | null | A ColumnDefinitions string like ```'300,2*,*'``` which can be used to specify the width of each column. When ColumnDefinitions is set ColumnWidth, MinColumns, MaxColumns are ignored. |
 
+## AnimatedText attached proeprties
+**AnimatedText** defines attached properties which can be used to animate text in a TextBlock.
+
+### Usage
+```xaml
+<TextBlock 
+	Text="My content" 
+	ice:AnimatedText.IsActive="{Binding ...}" 
+	ice:AnimatedText.AnimationType="Dots" />
+```
+
+### Properties
+| Property | Default | Description |
+| --- | --- | --- |
+| **IsActive** | true/false | When it's active it's visible and animating |
+| **AnimationType** | enum | name of animationtype |
+| **Delay** | TimeSpan | delay between animation frames |
+| **Frames** | string[] | Custom array of strings to use as frames for the animation or comman delimited list of frames |
+
 
 ## TextBlockSpinner Control
-The TextBlockSpinner control is a loading/busy spinner which uses Text characters to create the spinner.
+The **TextBlockSpinner** control is a loading/busy spinner which uses Text characters to create the spinner. It is effectively the same as a TextBlock with the AnimatedText attached properties set.
 ![spinners](https://github.com/user-attachments/assets/35750276-15e2-4941-b6b6-e2ea8fb87872)
 
 
@@ -90,7 +109,7 @@ The BigTextBlockSpinner control is a loading/busy spinner which uses Text charac
 | --- | --- | --- |
 | **IsActive** | true/false | When it's active it's visible and animating |
 | **Rows** | number | defines number of characters in height |
-| **Colunms** | number | defines number of characters in width |
+| **Columns** | number | defines number of characters in width |
 | **Length** | number | defines how "long" the tail is in characters |
 | **AnimationChar** | char| char to use to render the animation |
 

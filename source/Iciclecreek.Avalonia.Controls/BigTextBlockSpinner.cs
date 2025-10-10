@@ -4,7 +4,6 @@ using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.Layout;
 using Avalonia.Controls.Documents;
-using System.Diagnostics;
 
 namespace Iciclecreek.Avalonia.Controls
 {
@@ -28,7 +27,6 @@ namespace Iciclecreek.Avalonia.Controls
 
         public static readonly StyledProperty<IBrush> ForegroundProperty =
             AvaloniaProperty.Register<TextBlockSpinner, IBrush>(nameof(Foreground), defaultValue: Brushes.White);
-
 
         public static readonly StyledProperty<int> LengthProperty =
             AvaloniaProperty.Register<TextBlockSpinner, int>(nameof(Length), defaultValue: 3);
