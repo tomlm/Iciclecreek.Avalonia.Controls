@@ -7,17 +7,21 @@ using System.Text.RegularExpressions;
 
 namespace Iciclecreek.Avalonia.Controls
 {
+    public class HighlighterCollection : AvaloniaList<Highlighter>
+    {
+    }
+
     /// <summary>
     /// A TextBlock control that supports highlighting text based on regex patterns.
     /// </summary>
     public class TextHighlighter : TextBlock
     {
-        public static readonly StyledProperty<AvaloniaList<Highlighter>> HighlightersProperty =
-            AvaloniaProperty.Register<TextHighlighter, AvaloniaList<Highlighter>>(nameof(Highlighters));
+        public static readonly StyledProperty<HighlighterCollection> HighlightersProperty =
+            AvaloniaProperty.Register<TextHighlighter, HighlighterCollection>(nameof(Highlighters));
 
         public TextHighlighter()
         {
-            Highlighters = new AvaloniaList<Highlighter>();
+            Highlighters = new HighlighterCollection();
             Highlighters.CollectionChanged += (s, e) => UpdateHighlighting();
         }
 

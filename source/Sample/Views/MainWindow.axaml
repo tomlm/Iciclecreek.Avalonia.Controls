@@ -1,5 +1,5 @@
 <Window xmlns="https://github.com/avaloniaui"
-		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:vm="using:Sample.ViewModels"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -9,29 +9,31 @@
 		x:Class="Sample.Views.MainWindow"
 		Icon="/Assets/avalonia-logo.ico"
 		Title="Sample">
+	<Window.Resources>
+		<ice:HighlighterCollection x:Key="MyHighlighters" >
+			<!-- Highlight from "numbers" to "emails" with dark blue background -->
+			<ice:Highlighter Pattern="numbers.*?emails"
+							 Background="DarkBlue" />
+
+			<!-- Highlight email addresses -->
+			<ice:Highlighter Pattern="\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b"
+							 Foreground="Black"
+							 Background="LightYellow"
+							 TextDecorations="Underline" />
+
+			<!-- Highlight numbers -->
+			<ice:Highlighter Pattern="\d+"
+							 Foreground="Red"
+							 FontWeight="Bold" />
+
+			<!-- Highlight specific words -->
+			<ice:Highlighter Pattern="\btest\b"
+							 TextDecorations="Underline" />
+		</ice:HighlighterCollection>
+	</Window.Resources>
 	<StackPanel Orientation="Vertical">
-		<ice:TextHighlighter Text="Hello world! This is a test with some numbers 123 and emails test@example.com">
-			<ice:TextHighlighter.Highlighters>
-				<!-- Highlight from "numbers" to "emails" with dark blue background -->
-				<ice:Highlighter Pattern="numbers.*?emails"
-								 Background="DarkBlue" />
-				<!-- Highlight email addresses -->
-				<ice:Highlighter Pattern="\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b"
-								 Foreground="Black"
-								 Background="LightYellow"
-								 TextDecorations="Underline" />
-
-				<!-- Highlight numbers -->
-				<ice:Highlighter Pattern="\d+"
-								 Foreground="Red"
-								 FontWeight="Bold" />
-
-				<!-- Highlight specific words -->
-				<ice:Highlighter Pattern="\btest\b"
-								 TextDecorations="Underline"
-								 />
-			</ice:TextHighlighter.Highlighters>
-		</ice:TextHighlighter>
+		<ice:TextHighlighter Text="Hello world! This is a test with some numbers 123 and emails test@example.com"
+							 Highlighters="{StaticResource MyHighlighters}" />
 		<Button Content="Toggle Spinner" Click="OnToggleSpinner"></Button>
 		<WrapPanel >
 			<TextBlock Padding="4">BigTextBlockSpinner</TextBlock>

@@ -152,11 +152,29 @@ The **TextHighlighter** control is a TextBlock control that highlights text base
 
 ### Usage
 ````xaml
-<ice:TextHighlighter Text="This is some sample text to highlight keywords like Avalonia and C#">
-	<ice:TextHighlighter.Highlighters>
-		<ice:Highlighter Pattern="Avalonia" Foreground="White" Background="Blue" FontWeight="Bold" />
-		<ice:Highlighter Pattern="C#" Foreground="White" Background="Green" FontWeight="Bold" />
-		<ice:Highlighter Pattern="\bsample\b" Foreground="Black" Background="Yellow" FontStyle="Italic" />
-	</ice:TextHighlighter.Highlighters>
-</ice:TextHighlighter>
+<Window.Resources>
+	<ice:HighlighterCollection x:Key="MyHighlighters" >
+		<!-- Highlight from "numbers" to "emails" with dark blue background -->
+		<ice:Highlighter Pattern="numbers.*?emails"
+							Background="DarkBlue" />
+
+		<!-- Highlight email addresses -->
+		<ice:Highlighter Pattern="\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b"
+							Foreground="Black"
+							Background="LightYellow"
+							TextDecorations="Underline" />
+
+		<!-- Highlight numbers -->
+		<ice:Highlighter Pattern="\d+"
+							Foreground="Red"
+							FontWeight="Bold" />
+
+		<!-- Highlight specific words -->
+		<ice:Highlighter Pattern="\btest\b"
+							TextDecorations="Underline" />
+	</ice:HighlighterCollection>
+</Window.Resources>
+
+<ice:TextHighlighter Text="This is some sample text to highlight keywords like Avalonia and C#" 
+	Highlighters={StaticResource MyHighlighters}"/>
 ````
