@@ -49,18 +49,19 @@ namespace Iciclecreek.Avalonia.Controls
             }
 
             var inlines = new InlineCollection();
-            var segments = new List<TextSegment>();
-
-            // Find all matches for all highlighters
+            
+            // Create a list of all match positions with their highlighters
+            var matches = new List<HighlightMatch>();
+            
             foreach (var highlighter in Highlighters)
             {
                 if (highlighter?.Regex == null)
                     continue;
 
-                var matches = highlighter.Regex.Matches(Text);
-                foreach (Match match in matches)
+                var regexMatches = highlighter.Regex.Matches(Text);
+                foreach (Match match in regexMatches)
                 {
-                    segments.Add(new TextSegment
+                    matches.Add(new HighlightMatch
                     {
                         Start = match.Index,
                         End = match.Index + match.Length,
@@ -69,75 +70,78 @@ namespace Iciclecreek.Avalonia.Controls
                 }
             }
 
-            // Sort segments by start position
-            segments = segments.OrderBy(s => s.Start).ToList();
-
-            // Merge overlapping segments (first highlighter takes precedence)
-            var mergedSegments = new List<TextSegment>();
-            foreach (var segment in segments)
+            if (matches.Count == 0)
             {
-                if (mergedSegments.Count == 0 || segment.Start >= mergedSegments[mergedSegments.Count - 1].End)
+                inlines.Add(new Run(Text));
+                Inlines = inlines;
+                return;
+            }
+
+            // Create breakpoints at all segment boundaries
+            var breakpoints = new SortedSet<int> { 0, Text.Length };
+            foreach (var match in matches)
+            {
+                breakpoints.Add(match.Start);
+                breakpoints.Add(match.End);
+            }
+
+            var breakpointList = breakpoints.ToList();
+
+            // For each segment between breakpoints, determine which highlighters apply
+            for (int i = 0; i < breakpointList.Count - 1; i++)
+            {
+                int start = breakpointList[i];
+                int end = breakpointList[i + 1];
+                
+                // Find all highlighters that apply to this segment
+                var applicableHighlighters = matches
+                    .Where(m => m.Start <= start && m.End >= end)
+                    .Select(m => m.Highlighter)
+                    .ToList();
+
+                if (applicableHighlighters.Count == 0)
                 {
-                    mergedSegments.Add(segment);
+                    // No highlighting for this segment
+                    inlines.Add(new Run(Text.Substring(start, end - start)));
                 }
                 else
                 {
-                    // Handle overlapping segments - split if necessary
-                    var lastSegment = mergedSegments[mergedSegments.Count - 1];
-                    if (segment.End > lastSegment.End)
-                    {
-                        mergedSegments.Add(new TextSegment
-                        {
-                            Start = lastSegment.End,
-                            End = segment.End,
-                            Highlighter = segment.Highlighter
-                        });
-                    }
+                    // Apply attributes from highlighters (first one wins for each attribute)
+                    var run = new Run(Text.Substring(start, end - start));
+
+                    // Apply Foreground (first highlighter with Foreground wins)
+                    var foregroundHighlighter = applicableHighlighters.FirstOrDefault(h => h.Foreground != null);
+                    if (foregroundHighlighter != null)
+                        run.Foreground = foregroundHighlighter.Foreground;
+
+                    // Apply Background (first highlighter with Background wins)
+                    var backgroundHighlighter = applicableHighlighters.FirstOrDefault(h => h.Background != null);
+                    if (backgroundHighlighter != null)
+                        run.Background = backgroundHighlighter.Background;
+
+                    // Apply FontWeight (first highlighter with FontWeight wins)
+                    var fontWeightHighlighter = applicableHighlighters.FirstOrDefault(h => h.FontWeight.HasValue);
+                    if (fontWeightHighlighter != null)
+                        run.FontWeight = fontWeightHighlighter.FontWeight.Value;
+
+                    // Apply FontStyle (first highlighter with FontStyle wins)
+                    var fontStyleHighlighter = applicableHighlighters.FirstOrDefault(h => h.FontStyle.HasValue);
+                    if (fontStyleHighlighter != null)
+                        run.FontStyle = fontStyleHighlighter.FontStyle.Value;
+
+                    // Apply TextDecorations (first highlighter with TextDecorations wins)
+                    var textDecorationsHighlighter = applicableHighlighters.FirstOrDefault(h => h.TextDecorations != null);
+                    if (textDecorationsHighlighter != null)
+                        run.TextDecorations = textDecorationsHighlighter.TextDecorations;
+
+                    inlines.Add(run);
                 }
-            }
-
-            // Build the inline collection
-            int currentPosition = 0;
-            foreach (var segment in mergedSegments)
-            {
-                // Add unhighlighted text before this segment
-                if (segment.Start > currentPosition)
-                {
-                    inlines.Add(new Run(Text.Substring(currentPosition, segment.Start - currentPosition)));
-                }
-
-                // Add highlighted text
-                var run = new Run(Text.Substring(segment.Start, segment.End - segment.Start));
-                
-                if (segment.Highlighter.Foreground != null)
-                    run.Foreground = segment.Highlighter.Foreground;
-                
-                if (segment.Highlighter.Background != null)
-                    run.Background = segment.Highlighter.Background;
-                
-                if (segment.Highlighter.FontWeight.HasValue)
-                    run.FontWeight = segment.Highlighter.FontWeight.Value;
-                
-                if (segment.Highlighter.FontStyle.HasValue)
-                    run.FontStyle = segment.Highlighter.FontStyle.Value;
-                
-                if (segment.Highlighter.TextDecorations != null)
-                    run.TextDecorations = segment.Highlighter.TextDecorations;
-
-                inlines.Add(run);
-                currentPosition = segment.End;
-            }
-
-            // Add any remaining unhighlighted text
-            if (currentPosition < Text.Length)
-            {
-                inlines.Add(new Run(Text.Substring(currentPosition)));
             }
 
             Inlines = inlines;
         }
 
-        private class TextSegment
+        private class HighlightMatch
         {
             public int Start { get; set; }
             public int End { get; set; }

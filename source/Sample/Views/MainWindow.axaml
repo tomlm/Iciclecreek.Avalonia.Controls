@@ -14,23 +14,22 @@
 			<ice:TextHighlighter.Highlighters>
 				<!-- Highlight from "numbers" to "emails" with dark blue background -->
 				<ice:Highlighter Pattern="numbers.*?emails"
-									Background="DarkBlue"
-									Foreground="White" />
+								 Background="DarkBlue" />
 				<!-- Highlight email addresses -->
 				<ice:Highlighter Pattern="\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b"
-									Foreground="Black"
-									Background="LightYellow"
-									TextDecorations="Underline" />
+								 Foreground="Black"
+								 Background="LightYellow"
+								 TextDecorations="Underline" />
 
 				<!-- Highlight numbers -->
 				<ice:Highlighter Pattern="\d+"
-									Foreground="Red"
-									FontWeight="Bold" />
+								 Foreground="Red"
+								 FontWeight="Bold" />
 
 				<!-- Highlight specific words -->
 				<ice:Highlighter Pattern="\btest\b"
-									TextDecorations="Underline"
-									/>
+								 TextDecorations="Underline"
+								 />
 			</ice:TextHighlighter.Highlighters>
 		</ice:TextHighlighter>
 		<Button Content="Toggle Spinner" Click="OnToggleSpinner"></Button>
