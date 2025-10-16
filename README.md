@@ -3,6 +3,10 @@
 # Iciclecreek.Avalonia.Controls
 This is a package of UI controls for Avalonia UI.
 * **ColumnsPanel** - A panel which lays out arranges children into dynamic columns
+* **TextHighlighter** - A TextBlock control that highlights text based on regex patterns
+* **TextBlockSpinner** - A text-based loading/busy spinner control
+* **BigTextBlockSpinner** - A large text-based loading/busy spinner control
+* **AnimatedText** - Attached properties for animating text in a TextBlock
 
 # Installation
 Add the **Iciclecreek.Avalonia.Controls** package to your project
@@ -113,4 +117,46 @@ The BigTextBlockSpinner control is a loading/busy spinner which uses Text charac
 | **Length** | number | defines how "long" the tail is in characters |
 | **AnimationChar** | char| char to use to render the animation |
 
+## TextHighlighter Control
+The **TextHighlighter** control is a TextBlock control that highlights text based on regex patterns.
 
+### Usage
+```xaml
+<ice:TextHighlighter>
+    <ice:TextHighlighter.Highlighters>
+        <ice:Highlighter Pattern="regex" Foreground="black" Background="yellow" />
+    </ice:TextHighlighter.Highlighters>
+</ice:TextHighlighter>
+```
+
+### Properties
+
+| Property | Description |
+| --- | --- |
+| **Highlighters** | Collection of Highlighter objects that define highlighting rules |
+| **Text** | The text to display and highlight (inherited from TextBlock) |
+
+### Highlighter Properties
+
+| Property | Description |
+| --- | --- |
+| **Pattern** | Regular expression pattern to match text for highlighting |
+| **Foreground** | Brush for the text color of highlighted text |
+| **Background** | Brush for the background color of highlighted text |
+| **FontWeight** | Font weight (Normal, Bold, etc.) for highlighted text |
+| **FontStyle** | Font style (Normal, Italic, etc.) for highlighted text |
+| **TextDecorations** | Text decorations (Underline, Strikethrough, etc.) for highlighted text |
+
+**Note:** When multiple highlighters match overlapping text, the first highlighter in the collection takes precedence.
+
+
+### Usage
+````xaml
+<ice:TextHighlighter Text="This is some sample text to highlight keywords like Avalonia and C#">
+	<ice:TextHighlighter.Highlighters>
+		<ice:Highlighter Pattern="Avalonia" Foreground="White" Background="Blue" FontWeight="Bold" />
+		<ice:Highlighter Pattern="C#" Foreground="White" Background="Green" FontWeight="Bold" />
+		<ice:Highlighter Pattern="\bsample\b" Foreground="Black" Background="Yellow" FontStyle="Italic" />
+	</ice:TextHighlighter.Highlighters>
+</ice:TextHighlighter>
+````

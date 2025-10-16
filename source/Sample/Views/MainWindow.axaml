@@ -1,67 +1,90 @@
 <Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:Sample.ViewModels"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:views="clr-namespace:Sample.Views"
-        xmlns:ice="using:Iciclecreek.Avalonia.Controls"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-        x:Class="Sample.Views.MainWindow"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="Sample">
-  <StackPanel Orientation="Vertical">
-    <Button Content="Toggle Spinner" Click="OnToggleSpinner"></Button>
-    <WrapPanel >
-      <TextBlock Padding="4">BigTextBlockSpinner</TextBlock>
-      <StackPanel Orientation="Vertical" >
-        <TextBlock Padding="4">Dot</TextBlock>
-        <ice:BigTextBlockSpinner Columns="6" Rows="3" 
-                                 IsActive="{Binding SpinnerActive}" 
-                                 FontFamily="Cascadia Mono" />
-      </StackPanel>
-      <StackPanel Orientation="Vertical" >
-        <TextBlock Padding="4">Block</TextBlock>
-        <ice:BigTextBlockSpinner AnimationChar="█" 
-                                 Columns="5" 
-                                 Rows="3" 
-                                 Length="5" 
-                                 IsActive="{Binding SpinnerActive}" 
-                                 FontFamily="Cascadia Mono" />
-      </StackPanel>
-    </WrapPanel>
-    <ItemsControl x:Name="SpinnerPanel" ItemsSource="{Binding AnimationTypes}">
-      <ItemsControl.ItemsPanel>
-        <ItemsPanelTemplate>
-          <ice:ColumnsPanel />
-        </ItemsPanelTemplate>
-      </ItemsControl.ItemsPanel>
-      <ItemsControl.ItemTemplate>
-        <DataTemplate>
-          <Grid ColumnDefinitions="Auto Auto" >
-            <TextBlock Text="{Binding}" FontSize="20" FontFamily="Consolas"  />
-            <!--<ice:TextBlockSpinner AnimationType="{Binding}" Grid.Column="1" IsActive="{Binding #SpinnerPanel.DataContext.SpinnerActive}" FontSize="20" FontFamily="Consolas"  />-->
-            <TextBlock Grid.Column="1"
-                       Margin="4 0 0 0"
-                       ice:AnimatedText.IsAnimating="{Binding #SpinnerPanel.DataContext.SpinnerActive}"
-                       ice:AnimatedText.Animation="{Binding}"
-                       FontSize="20"
-                       FontFamily="Consolas"
-                       Text="{Binding}"/>
-          </Grid>
-        </DataTemplate>
-      </ItemsControl.ItemTemplate>
-    </ItemsControl>
-    <StackPanel Orientation="Horizontal">
-      <TextBlock Text="Custom" FontSize="20" FontFamily="Consolas"  />
-      <TextBlock Grid.Column="1"
-             Margin="4 0 0 0"
-             ice:AnimatedText.IsAnimating="{Binding #SpinnerPanel.DataContext.SpinnerActive}"
-             ice:AnimatedText.Frames="1,2,3,4,5,6,7,8,9,8,7,6,6,5,4,3,2"
-             FontSize="20"
-             FontFamily="Consolas"
-             Text="Custom"/>
-    </StackPanel>
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:vm="using:Sample.ViewModels"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:views="clr-namespace:Sample.Views"
+		xmlns:ice="using:Iciclecreek.Avalonia.Controls"
+		mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+		x:Class="Sample.Views.MainWindow"
+		Icon="/Assets/avalonia-logo.ico"
+		Title="Sample">
+	<StackPanel Orientation="Vertical">
+		<ice:TextHighlighter Text="Hello world! This is a test with some numbers 123 and emails test@example.com">
+			<ice:TextHighlighter.Highlighters>
+				<!-- Highlight from "numbers" to "emails" with dark blue background -->
+				<ice:Highlighter Pattern="numbers.*?emails"
+									Background="DarkBlue"
+									Foreground="White" />
+				<!-- Highlight email addresses -->
+				<ice:Highlighter Pattern="\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b"
+									Foreground="Black"
+									Background="LightYellow"
+									TextDecorations="Underline" />
 
-    <views:MainView />
-  </StackPanel>
+				<!-- Highlight numbers -->
+				<ice:Highlighter Pattern="\d+"
+									Foreground="Red"
+									FontWeight="Bold" />
+
+				<!-- Highlight specific words -->
+				<ice:Highlighter Pattern="\btest\b"
+									TextDecorations="Underline"
+									/>
+			</ice:TextHighlighter.Highlighters>
+		</ice:TextHighlighter>
+		<Button Content="Toggle Spinner" Click="OnToggleSpinner"></Button>
+		<WrapPanel >
+			<TextBlock Padding="4">BigTextBlockSpinner</TextBlock>
+			<StackPanel Orientation="Vertical" >
+				<TextBlock Padding="4">Dot</TextBlock>
+				<ice:BigTextBlockSpinner Columns="6" Rows="3"
+										 IsActive="{Binding SpinnerActive}"
+										 FontFamily="Cascadia Mono" />
+			</StackPanel>
+			<StackPanel Orientation="Vertical" >
+				<TextBlock Padding="4">Block</TextBlock>
+				<ice:BigTextBlockSpinner AnimationChar="█"
+										 Columns="5"
+										 Rows="3"
+										 Length="5"
+										 IsActive="{Binding SpinnerActive}"
+										 FontFamily="Cascadia Mono" />
+			</StackPanel>
+		</WrapPanel>
+		<ItemsControl x:Name="SpinnerPanel" ItemsSource="{Binding AnimationTypes}">
+			<ItemsControl.ItemsPanel>
+				<ItemsPanelTemplate>
+					<ice:ColumnsPanel />
+				</ItemsPanelTemplate>
+			</ItemsControl.ItemsPanel>
+			<ItemsControl.ItemTemplate>
+				<DataTemplate>
+					<Grid ColumnDefinitions="Auto Auto" >
+						<TextBlock Text="{Binding}" FontSize="20" FontFamily="Consolas"  />
+						<!--<ice:TextBlockSpinner AnimationType="{Binding}" Grid.Column="1" IsActive="{Binding #SpinnerPanel.DataContext.SpinnerActive}" FontSize="20" FontFamily="Consolas"  />-->
+						<TextBlock Grid.Column="1"
+								   Margin="4 0 0 0"
+								   ice:AnimatedText.IsAnimating="{Binding #SpinnerPanel.DataContext.SpinnerActive}"
+								   ice:AnimatedText.Animation="{Binding}"
+								   FontSize="20"
+								   FontFamily="Consolas"
+								   Text="{Binding}"/>
+					</Grid>
+				</DataTemplate>
+			</ItemsControl.ItemTemplate>
+		</ItemsControl>
+		<StackPanel Orientation="Horizontal">
+			<TextBlock Text="Custom" FontSize="20" FontFamily="Consolas"  />
+			<TextBlock Grid.Column="1"
+					   Margin="4 0 0 0"
+					   ice:AnimatedText.IsAnimating="{Binding #SpinnerPanel.DataContext.SpinnerActive}"
+					   ice:AnimatedText.Frames="1,2,3,4,5,6,7,8,9,8,7,6,6,5,4,3,2"
+					   FontSize="20"
+					   FontFamily="Consolas"
+					   Text="Custom"/>
+		</StackPanel>
+
+		<views:MainView />
+	</StackPanel>
 </Window>
