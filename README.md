@@ -120,15 +120,7 @@ The BigTextBlockSpinner control is a loading/busy spinner which uses Text charac
 ## TextHighlighter Control
 The **TextHighlighter** control is a TextBlock control that highlights text based on regex patterns.
 
-### Usage
-```xaml
-<ice:TextHighlighter>
-    <ice:TextHighlighter.Highlighters>
-        <ice:Highlighter Pattern="regex" Foreground="black" Background="yellow" />
-    </ice:TextHighlighter.Highlighters>
-</ice:TextHighlighter>
-```
-
+<img width="855" height="47" alt="image" src="https://github.com/user-attachments/assets/8aabf173-8723-4df7-9236-e0344d9647ab" />
 ### Properties
 
 | Property | Description |
