@@ -57,24 +57,37 @@ namespace Iciclecreek.Avalonia.Controls
             // Create a list of all match positions with their highlighters
             var matches = new List<HighlightMatch>();
             
+            // Track highlighters with HighlightAll=true that have matches
+            var highlightAllHighlighters = new List<Highlighter>();
+            
             foreach (var highlighter in Highlighters)
             {
                 if (highlighter?.Regex == null)
                     continue;
 
                 var regexMatches = highlighter.Regex.Matches(Text);
-                foreach (Match match in regexMatches)
+                
+                if (highlighter.HighlightAll && regexMatches.Count > 0)
                 {
-                    matches.Add(new HighlightMatch
+                    // If HighlightAll is true and pattern matches, track this highlighter
+                    highlightAllHighlighters.Add(highlighter);
+                }
+                else
+                {
+                    // Normal highlighting - only matched regions
+                    foreach (Match match in regexMatches)
                     {
-                        Start = match.Index,
-                        End = match.Index + match.Length,
-                        Highlighter = highlighter
-                    });
+                        matches.Add(new HighlightMatch
+                        {
+                            Start = match.Index,
+                            End = match.Index + match.Length,
+                            Highlighter = highlighter
+                        });
+                    }
                 }
             }
 
-            if (matches.Count == 0)
+            if (matches.Count == 0 && highlightAllHighlighters.Count == 0)
             {
                 inlines.Add(new Run(Text));
                 Inlines = inlines;
@@ -102,6 +115,9 @@ namespace Iciclecreek.Avalonia.Controls
                     .Where(m => m.Start <= start && m.End >= end)
                     .Select(m => m.Highlighter)
                     .ToList();
+
+                // Add HighlightAll highlighters (they apply to the entire text)
+                applicableHighlighters.AddRange(highlightAllHighlighters);
 
                 if (applicableHighlighters.Count == 0)
                 {
@@ -176,6 +192,9 @@ namespace Iciclecreek.Avalonia.Controls
         public static readonly StyledProperty<TextDecorationCollection> TextDecorationsProperty =
             AvaloniaProperty.Register<Highlighter, TextDecorationCollection>(nameof(TextDecorations));
 
+        public static readonly StyledProperty<bool> HighlightAllProperty =
+            AvaloniaProperty.Register<Highlighter, bool>(nameof(HighlightAll));
+
         private Regex _regex;
 
         public Highlighter()
@@ -234,6 +253,17 @@ namespace Iciclecreek.Avalonia.Controls
         {
             get => GetValue(TextDecorationsProperty);
             set => SetValue(TextDecorationsProperty, value);
+        }
+
+        /// <summary>
+        /// Gets or sets whether to apply highlighting to the entire text when the pattern matches.
+        /// If true, the highlighter's attributes apply to all text when the pattern is found anywhere.
+        /// If false (default), only the matched text portions are highlighted.
+        /// </summary>
+        public bool HighlightAll
+        {
+            get => GetValue(HighlightAllProperty);
+            set => SetValue(HighlightAllProperty, value);
         }
 
         internal Regex Regex

@@ -146,6 +146,7 @@ The **TextHighlighter** control is a TextBlock control that highlights text base
 | **FontWeight** | Font weight (Normal, Bold, etc.) for highlighted text |
 | **FontStyle** | Font style (Normal, Italic, etc.) for highlighted text |
 | **TextDecorations** | Text decorations (Underline, Strikethrough, etc.) for highlighted text |
+| **HightlightAll** | Applies highlighting to entire text instead of the pattern |
 
 **Note:** When multiple highlighters match overlapping text, the first highlighter in the collection takes precedence.
 
