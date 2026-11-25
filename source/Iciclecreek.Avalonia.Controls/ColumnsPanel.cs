@@ -39,7 +39,7 @@ namespace Iciclecreek.Avalonia.Controls
         /// <summary>
         /// Defines the <see cref="ColumnGap"/> property.
         /// </summary>
-        public static readonly StyledProperty<double> ColumnGapProperty = AvaloniaProperty.Register<ColumnsPanel, double>(nameof(Gap), 0.0);
+        public static readonly StyledProperty<double> ColumnGapProperty = AvaloniaProperty.Register<ColumnsPanel, double>(nameof(ColumnGap), 0.0);
 
         /// <summary>
         /// Defines the <see cref="ColumnWidthProperty"/> property.
@@ -183,119 +183,80 @@ namespace Iciclecreek.Avalonia.Controls
         }
 
         /// <summary>
-        /// Measures the control.
+        /// Measures the control: each child at its column's width, in the shortest column so far.
         /// </summary>
         /// <param name="availableSize">The available size.</param>
-        /// <returns>The desired size of the control.</returns>
+        /// <returns>The width the columns take, and the height of the tallest.</returns>
         protected override Size MeasureOverride(Size availableSize)
         {
-            double childAvailableWidth = double.PositiveInfinity;
-            double childAvailableHeight = double.PositiveInfinity;
-
-            childAvailableWidth = availableSize.Width;
-
-            if (!double.IsNaN(Width))
-            {
-                childAvailableWidth = Width;
-            }
-
-            childAvailableWidth = Math.Min(childAvailableWidth, MaxWidth);
-            childAvailableWidth = Math.Max(childAvailableWidth, MinWidth);
-
-            var nColumns = GetNumberColumns(childAvailableWidth);
-
-            var columnWidths = GetColumnWidths(childAvailableWidth, nColumns);
-
-            var columnHeights = new List<double>();
-            for (int i = 0; i < nColumns; i++)
-                columnHeights.Add((double)0);
+            var columnWidths = GetColumnWidths(availableSize.Width);
+            var columnHeights = new double[columnWidths.Count];
+            var columnItems = new int[columnWidths.Count];
 
             foreach (Control child in Children)
             {
-                var minCol = columnHeights.IndexOfMin();
-                child.Measure(new Size(columnWidths[minCol], childAvailableHeight));
-                columnHeights[minCol] += child.DesiredSize.Height + Gap;
+                var column = columnHeights.IndexOfMin();
+                child.Measure(new Size(columnWidths[column], double.PositiveInfinity));
+                columnHeights[column] += (columnItems[column]++ > 0 ? Gap : 0) + child.DesiredSize.Height;
             }
 
-            var measuredHeight = columnHeights.Max() - Gap;
-            return new Size(childAvailableWidth, measuredHeight * 2);
+            var usedWidth = columnWidths.Sum() + ColumnGap * Math.Max(0, columnWidths.Count - 1);
+            return new Size(usedWidth, columnHeights.Max());
         }
 
-
         /// <summary>
-        /// Arranges the control's children.
+        /// Arranges the control's children: each in the shortest column so far, as wide as its column.
         /// </summary>
         /// <param name="finalSize">The size allocated to the control.</param>
         /// <returns>The space taken.</returns>
         protected override Size ArrangeOverride(Size finalSize)
         {
-            double arrangedWidth = finalSize.Width;
-            double arrangedHeight = finalSize.Height;
-            double gap = Gap;
-
-            arrangedHeight = 0;
-            int nColumns = GetNumberColumns(arrangedWidth);
-
-            var columnHeights = new List<double>(nColumns);
-            var columnLefts = new List<double>(nColumns);
-            var columnWidths = GetColumnWidths(finalSize.Width, nColumns);
-            for (int i = 0; i < nColumns; i++)
-            {
-                columnHeights.Add((double)0);
-                columnLefts.Add((double)0);
-            }
-
-            double left = 0;
-            double scale = 1.0;
-            if (nColumns == MinColumns && arrangedWidth / MinColumns < ColumnWidth)
-            {
-                scale = arrangedWidth / (MinColumns * (ColumnWidth + ColumnGap));
-            }
-
-            for (int iCol = 0; iCol < nColumns; iCol++)
-            {
-                if (iCol > 0)
-                {
-                    columnLefts[iCol] = left;
-                }
-
-                left += (columnWidths[iCol] * scale) + ColumnGap;
-            }
+            var columnWidths = GetColumnWidths(finalSize.Width);
+            var columnHeights = new double[columnWidths.Count];
+            var columnItems = new int[columnWidths.Count];
+            var columnLefts = new double[columnWidths.Count];
+            for (int iCol = 1; iCol < columnWidths.Count; iCol++)
+                columnLefts[iCol] = columnLefts[iCol - 1] + columnWidths[iCol - 1] + ColumnGap;
 
             foreach (Control child in Children)
             {
-                double childWidth = child.DesiredSize.Width * scale;
-                double childHeight = child.DesiredSize.Height * scale;
-
-                //  double width = Math.Max(childWidth, arrangedWidth);
-                var minCol = columnHeights.IndexOfMin();
-                Rect childFinal = new Rect(columnLefts[minCol], columnHeights[minCol], childWidth, childHeight);
-                child.Arrange(childFinal);
-                columnHeights[minCol] += childHeight + Gap;
+                var column = columnHeights.IndexOfMin();
+                var top = columnHeights[column] + (columnItems[column]++ > 0 ? Gap : 0);
+                child.Arrange(new Rect(columnLefts[column], top, columnWidths[column], child.DesiredSize.Height));
+                columnHeights[column] = top + child.DesiredSize.Height;
             }
 
-            arrangedHeight = Math.Max(arrangedHeight - gap, finalSize.Height);
-            return new Size(arrangedWidth, arrangedHeight * 2);
+            return finalSize;
         }
 
-        private int GetNumberColumns(double arrangedWidth)
+        /// <summary>
+        /// The number of columns: one per column definition; or as many of <see cref="ColumnWidth"/>
+        /// (with <see cref="ColumnGap"/> between them) as fit, within <see cref="MinColumns"/> and <see cref="MaxColumns"/>.
+        /// </summary>
+        private int GetNumberColumns(double availableWidth)
         {
             if (!String.IsNullOrEmpty(ColumnDefinitions))
             {
-                var parts = ColumnDefinitions
+                return ColumnDefinitions
                     .Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
-                    .ToList();
-
-                return parts.Count;
+                    .Length;
             }
 
-            var nColumns = Math.Max(MinColumns, (int)Math.Floor(arrangedWidth / (ColumnWidth + ColumnGap)));
-            nColumns = Math.Min(MaxColumns, nColumns);
-            return nColumns;
+            // n columns take n widths and n - 1 gaps: there is no gap after the last.
+            var fit = double.IsInfinity(availableWidth) || ColumnWidth + ColumnGap <= 0
+                ? MinColumns
+                : (int)Math.Floor((availableWidth + ColumnGap) / (ColumnWidth + ColumnGap));
+            return Math.Max(1, Math.Min(MaxColumns, Math.Max(MinColumns, fit)));
         }
 
-        private List<double> GetColumnWidths(double childAvailableWidth, int nColumns)
+        /// <summary>
+        /// Each column's width: from the column definitions; or <see cref="ColumnWidth"/>, shared out
+        /// narrower when <see cref="MinColumns"/> of them do not fit.
+        /// </summary>
+        private List<double> GetColumnWidths(double availableWidth)
         {
+            var nColumns = GetNumberColumns(availableWidth);
+            var gaps = ColumnGap * (nColumns - 1);
             List<double> columnWidths = new List<double>();
             if (!String.IsNullOrEmpty(ColumnDefinitions))
             {
@@ -304,66 +265,41 @@ namespace Iciclecreek.Avalonia.Controls
                     .Replace("Auto", autoValue, StringComparison.OrdinalIgnoreCase)
                     .Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
                     .ToList();
-                int starCount = 0;
-                for (int iCol = 0; iCol < nColumns; iCol++)
+                double totalWeight = 0;
+                foreach (var part in parts)
                 {
-                    if (parts[iCol].EndsWith('*'))
+                    if (part.EndsWith('*'))
                     {
-                        // it's a ratio star value
-                        starCount++;
-                        columnWidths.Add(0);
+                        // A share of what the fixed columns leave.
+                        var weight = part.TrimEnd('*');
+                        var star = String.IsNullOrEmpty(weight) ? 1 : double.TryParse(weight, out var w) ? w : 0;
+                        totalWeight += star;
+                        columnWidths.Add(-star);
                     }
                     else
                     {
-                        // it's a static value
-                        if (float.TryParse(parts[iCol], out float width))
-                        {
-                            columnWidths.Add(width);
-                        }
-                        else
-                        {
-                            columnWidths.Add(0);
-                        }
+                        columnWidths.Add(double.TryParse(part, out var width) ? width : 0);
                     }
                 }
 
-                // var fixed parts
-                var fixedWidth = columnWidths.Sum();
-                float totalWeight = 0;
+                var fixedWidth = columnWidths.Where(w => w > 0).Sum();
+                var available = double.IsInfinity(availableWidth)
+                    ? ColumnWidth * columnWidths.Count(w => w < 0)
+                    : Math.Max(0, availableWidth - fixedWidth - gaps);
                 for (int iCol = 0; iCol < nColumns; iCol++)
                 {
-                    if (parts[iCol].EndsWith("*"))
-                    {
-                        var part = parts[iCol].Trim('*');
-                        if (String.IsNullOrEmpty(part))
-                            part = "1";
-
-                        if (float.TryParse(part, out var starWidth))
-                        {
-                            totalWeight += starWidth;
-                            columnWidths[iCol] = starWidth;
-                        }
-                        else
-                        {
-                            columnWidths[iCol] = 0;
-                        }
-                    }
-                }
-                var available = childAvailableWidth - fixedWidth - (ColumnGap * nColumns - 1);
-                for (int iCol = 0; iCol < nColumns; iCol++)
-                {
-                    if (parts[iCol].Contains("*"))
-                    {
-                        // this is the actual comupted relative width.
-                        columnWidths[iCol] = columnWidths[iCol] * available / totalWeight;
-                    }
+                    if (columnWidths[iCol] < 0)
+                        columnWidths[iCol] = totalWeight > 0 ? -columnWidths[iCol] * available / totalWeight : 0;
                 }
             }
             else
             {
-
+                // Narrower than MinColumns columns need: each shares the room, so its children wrap to it.
+                var width = double.IsInfinity(availableWidth)
+                    ? ColumnWidth
+                    : Math.Max(0, Math.Min(ColumnWidth, (availableWidth - gaps) / nColumns));
                 for (int iCol = 0; iCol < nColumns; iCol++)
-                    columnWidths.Add((double)ColumnWidth);
+                    columnWidths.Add(width);
             }
             return columnWidths;
         }
