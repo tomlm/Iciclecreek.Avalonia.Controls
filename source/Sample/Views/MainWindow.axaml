@@ -7,6 +7,7 @@
 		xmlns:ice="using:Iciclecreek.Avalonia.Controls"
 		mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
 		x:Class="Sample.Views.MainWindow"
+		x:CompileBindings="False"
 		Icon="/Assets/avalonia-logo.ico"
 		Title="Sample">
 	<Window.Resources>
