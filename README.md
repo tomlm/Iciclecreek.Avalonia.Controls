@@ -11,6 +11,8 @@ This is a package of UI controls for Avalonia UI.
 # Installation
 Add the **Iciclecreek.Avalonia.Controls** package to your project
 
+Version 3.x is for Avalonia 12; version 2.x is for Avalonia 11.
+
 Update your xmlns 
 ```xaml
 	xmlns:ice="using:Iciclecreek.Avalonia.Controls"
@@ -26,6 +28,8 @@ There are 2 modes of usage:
   properties can be used to control the number of columns.
 * **Static Columns** - The **ColumnDefinitions** property defines column definitions (ex: ```'*, 2*, 500'```) 
   The number of columns is determined by the number of column definitions. **MinColumns**, **MaxColumns** are ignored. 
+
+Each child is placed in the shortest column so far and is as wide as its column (its **HorizontalAlignment** places it when it is narrower). **Gap** is the space between children in a column, **ColumnGap** the space between columns. When the panel is narrower than **MinColumns** columns need, the columns share the room and their children wrap to it.
  
 
 ### Usage
